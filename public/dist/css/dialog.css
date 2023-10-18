@@ -1,0 +1,8 @@
+.customDlgHeader > .e-dlg-header-content{
+    background-color:#ededed !important;
+    font-size: 0.9em;
+}
+
+.e-dlg-content .customDlg{
+    font-size:1.3em;
+}
