@@ -50,10 +50,30 @@ class Login_Model extends Model
         echo(json_encode($msg));
     }
 
-    // public function listaLogin()
-    // {
-    //     $sql = "select nome,senha,nivel from usuario order by nome";
-    //     $result = $this->db->select($sql);
-    //     echo (json_encode($result));
-    // }
+    public function EnviarEmail()
+    {
+        $post = json_decode(file_get_contents('php://input'));
+        // var_dump($post);exit;
+        
+        $email = $post->EMAIL;
+        $email = strtolower($email);
+
+        if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+            true;
+        } else{
+            exit(json_encode(array("code" => "0", "msg" => "Opss!! E-mail está inválido!!")));
+        }
+
+        // SE PASSAR MANDAR UM E-MAIL COM A SENHA NOVA
+
+        /* SEQUENCIA ALEATORIA DE CARACTERE E NUMEROS PRA SENHA */
+        $numero_de_bytes = 4;
+        $restultado_bytes = random_bytes($numero_de_bytes);
+        $senha_final = bin2hex($restultado_bytes);
+
+        // senha final mandar no email do usuario
+
+        /* DECODIFICAÇAO DA SENHA */
+        $senha_hash = hash('sha256', $senha_final);
+    }
 }

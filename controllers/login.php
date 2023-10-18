@@ -23,4 +23,9 @@ class Login extends Controller {
     {
         $this->model->Login();
     }
+
+    function EnviarEmail()
+    {
+        $this->model->EnviarEmail();
+    }
 }

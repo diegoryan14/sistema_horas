@@ -53,7 +53,7 @@ const AppTemplate = `
 							placeholder="Tipo Usuário">
 						</ejs-dropdownlist>
 					</div>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">		
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
 						<ejs-button style="margin-top: 0px;" :isPrimary="true" v-on:click.native="cadastrar" ref="cadastrar">Cadastrar</ejs-button>
 					</div>
 				</div>

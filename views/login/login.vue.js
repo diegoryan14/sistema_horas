@@ -48,9 +48,49 @@ const AppTemplate = `
             Sistemas de Horas - 2023
         </div>
     </footer>
+    <ejs-dialog
+        isModal='true'
+        :buttons="modalButtons"
+        ref="modal"
+        v-bind:visible="false"
+        :animationSettings="{ effect: 'None' }"
+        :showCloseIcon='false'
+        :closeOnEscape='false'
+        target="body"
+        style="margin: 10px"
+        width="700px">
+        <div class="row">
+            <div class="col col-md-12">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                    <div class="e-card-content" style="margin-bottom: 20px;">
+                        <h5 style="font-weight: bold;">Informe seu E-mail</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2"></div>
+                        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8" style="margin-bottom: 10px;">
+                            <ejs-textbox
+                                ref="emial"
+                                id="email"
+                                type="text"
+                                style="text-transform: unset;"
+                                floatLabelType="Auto"
+                                cssClass="e-outline"
+                                maxlength="100"
+                                placeholder="E-mail"
+                                v-model="input.EMAIL">
+                            </ejs-textbox>
+                        </div>
+                        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ejs-dialog>
 </div>
 `;
 
+/* ANOTAÇÕES
+*/
 
 Vue.component("AppVue", {
   template: AppTemplate,
@@ -59,8 +99,10 @@ Vue.component("AppVue", {
         input: {
             CPF: null,
             SENHA: null,
+            EMAIL: null,
             count: 0
-        }
+        },
+        modalButtons: null,
     }
   },
     methods: {
@@ -98,28 +140,62 @@ Vue.component("AppVue", {
             });
         },
         nova_senha(){
-            console.log("test");
-        }
+            this.abrirModal();
+        },
+        EnviarEmail(){
+            if(this.input.EMAIL == null || this.input.EMAIL.trim() == ''){
+                dialogAlert({
+                    msg: 'Por Favor, Insira o E-mail!!',
+                    closeEsc: true,
+                    btnOkText: "Fechar"
+                })
+                return;
+            }
+            var obj = {
+                'EMAIL': this.input.EMAIL
+            }
+            axios.post(BASE + "/login/EnviarEmail",obj).then((res) => {
+                if(res.data.code == "0"){
+                    dialogAlert({
+                        msg: res.data.msg,
+                        closeEsc: true,
+                        btnOkText: "Fechar"
+                    })
+                    return;
+                }
+                // dialogAlert({
+                //     msg: res.data.msg,
+                //     closeEsc: true,
+                //     btnOkText: "Fechar"
+                // })
+                // return;
+            })
+        },
+        abrirModal() {
+            this.$refs.modal.show();
+            this.modalButtons = [{ click: this.EnviarEmail, buttonModel: { cssClass: "e-outline", content: '<i class="fas fa-check"></i>&nbsp&nbspEnviar' } }, { click: this.fecharModal, buttonModel: { cssClass: "e-outline", content: '<i class="fas fa-times-circle"></i>&nbsp&nbspFechar' } }];
+        },
+        fecharModal() {
+            this.$refs.modal.hide();
+        },
     },
     mounted() {
         this.$refs.CPF.focusIn();
-        this.$refs.senhaAtual.addIcon('append', 'fas fa-eye-slash');
-        console.log(document.querySelector('#senha_atual> fa-eye-slash'));
-        document.querySelector('#senha_atual fa-eye-slash').addEventListener('click', () => {
-            if (this.count == 0) {
-                this.$refs.senhaAtual.ej2Instances.type = 'text';
-                this.$refs.senhaAtual.$el.parentNode.childNodes[3].classList.value = 'fas fa-eye e-input-group-icon';
-                this.count = 1;
-            } else {
-                this.$refs.senhaAtual.ej2Instances.type = 'password';
-                this.$refs.senhaAtual.$el.parentNode.childNodes[3].classList.value = 'fas fa-eye-slash e-input-group-icon';
-                this.count = 0;
-            }
-        });
+        // this.$refs.senhaAtual.addIcon('append', 'fas fa-eye-slash');
+        // console.log(document.querySelector('#senha_atual> fa-eye-slash'));
+        // document.querySelector('#senha_atual fa-eye-slash').addEventListener('click', () => {
+        //     if (this.count == 0) {
+        //         this.$refs.senhaAtual.ej2Instances.type = 'text';
+        //         this.$refs.senhaAtual.$el.parentNode.childNodes[3].classList.value = 'fas fa-eye e-input-group-icon';
+        //         this.count = 1;
+        //     } else {
+        //         this.$refs.senhaAtual.ej2Instances.type = 'password';
+        //         this.$refs.senhaAtual.$el.parentNode.childNodes[3].classList.value = 'fas fa-eye-slash e-input-group-icon';
+        //         this.count = 0;
+        //     }
+        // });
     },
 });
-
-
 
 function dialogAlert(args) {
     ej.base.enableRipple();
@@ -163,9 +239,3 @@ function dialogAlert(args) {
         },
     });
 }
-
-
-
-
-/* <input type="text" placeholder="CPF" OnKeyPress="formatar('###.###.###-##',this)" id="txtcpdf" v-model="input.CPF" ref="CPF"/>
-<input type="password" placeholder="Senha" id="txtsenha" v-model="input.SENHA" ref="SENHA"/> */

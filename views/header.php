@@ -109,8 +109,8 @@
                                     <?php }
                                     } ?>
                                     <?php if (isset($_SESSION['logado'])) {
-                                        if ($_SESSION['TIPO_USUARIO'] == 4) { ?>
-                                            <a href="<?= URL ?>tipofluxo" class="nav__dropdown-item">Teste</a>
+                                        if ($_SESSION['TIPO_USUARIO'] == 1 || $_SESSION['TIPO_USUARIO'] == 2 || $_SESSION['TIPO_USUARIO'] == 3 || $_SESSION['TIPO_USUARIO'] == 4) { ?>
+                                            <a href="<?= URL ?>alterar_senha" class="nav__dropdown-item">Alterar Senha</a>
                                     <?php }
                                     } ?>
                                 </div>
