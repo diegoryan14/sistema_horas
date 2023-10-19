@@ -183,7 +183,8 @@ Vue.component("AppVue", {
         this.$refs.CPF.focusIn();
         // this.$refs.senhaAtual.addIcon('append', 'fas fa-eye-slash');
         // console.log(document.querySelector('#senha_atual> fa-eye-slash'));
-        // document.querySelector('#senha_atual fa-eye-slash').addEventListener('click', () => {
+        // document.querySelector('#senha_atual fas fa-eye-slash').addEventListener('click', () => {
+        //     console.log("aqui");
         //     if (this.count == 0) {
         //         this.$refs.senhaAtual.ej2Instances.type = 'text';
         //         this.$refs.senhaAtual.$el.parentNode.childNodes[3].classList.value = 'fas fa-eye e-input-group-icon';

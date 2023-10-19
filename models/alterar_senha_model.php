@@ -14,45 +14,55 @@ class Alterar_senha_Model extends Model
         $post = json_decode(file_get_contents('php://input'));
 
         $senha_atual = $post->SENHA_ATUAL;
-        // SENHA E CONFIRMA SENHA
         $nova_senha = $post->NOVA_SENHA;
         $confirma_senha = $post->CONFIRM_SENHA;
 
+        if($senha_atual == null){
+            exit(json_encode(array("code" => "0", "msg" => "Por favor, insira a Senha Atual.")));
+        }
+        if($nova_senha == null){
+            exit(json_encode(array("code" => "0", "msg" => "Por favor, insira a Nova Senha.")));
+        }
+        if($confirma_senha == null){
+            exit(json_encode(array("code" => "0", "msg" => "Por favor, Confirme sua Nova Senha.")));
+        }
         // if($nova_senha != $confirma_senha){
         //     exit(json_encode(array("code" => "0", "msg" => "Senha diferentes!!. Por favor, digite novamente.")));
         // }
 
         Session::init();        
         $o = Session::get('CPF');
-        var_dump($o);exit;
+        // var_dump($o);exit;
+        $cpf = $o;
+        $senha_atual_hash = hash('sha256', $senha_atual);
 
+        $dados = array(':par_CPF' => $cpf);
+        $result = $this->db->select("SELECT 
+                                       U.SENHA
+                                     FROM 
+                                        USUARIO U
+                                     WHERE 
+                                        U.CPF = :par_CPF",$dados);
+        var_dump($result);exit;
+        if(!$result){
+            exit(json_encode(array("code" => "0", "msg" => "Erro ao Alterar Senha, Tente novamente mais tarde.")));
+        }
+        
+        if($result[0]['SENHA'] != $senha_atual_hash){
+            exit(json_encode(array("code" => "0", "msg" => "Senha atual está Incorreta, digite novamente.")));
+        }
 
-        /* DECODIFICAÇAO DA SENHA */
-        $senha_hash = hash('sha256', $nova_senha);
-
-        if($nome == null){
-            exit(json_encode(array("code" => "0", "msg" => "Por favor, insira o Nome.")));
-        }
-        else if($CPF == null){
-            exit(json_encode(array("code" => "0", "msg" => "Por favor, insira o CPF.")));
-        }
-        else if($email == null){
-            exit(json_encode(array("code" => "0", "msg" => "Por favor, insira o E-mail.")));
-        }
-        else if($tipo_usuario == null){
-            exit(json_encode(array("code" => "0", "msg" => "Por favor, selecione o Tipo Usuário.")));
-        }
-        else {
-            $nome = strtoupper($nome);
-            $email = strtolower($email);
-
-            // send_email($email, $senha_final);
-            $result = $this->db->insert('USUARIO', array('NOME' =>$nome, 'CPF' => $CPF, 'EMAIL' => $email, 'TIPO_USUARIO' => $tipo_usuario, 'SENHA' => $senha_hash));
+        /* DECODIFICAÇAO DA NOVA SENHA */
+        $nova_senha_hash = hash('sha256', $nova_senha);
+        
+        if(strlen($nova_senha_hash) > 0){
+            $dadosSave = array('SENHA' => $nova_senha_hash);
+            $result = $this->db->update('BANCODEHORAS.USUARIO', $dadosSave,"CPF=$cpf");
 
             if($result){
-                exit(json_encode(array("code" => "1", "msg" => "Cadastro realizado com sucesso.")));
+                exit(json_encode(array("code" => "1", "msg" => "Senha atualizada com Sucesso!!")));
             } else{
-                exit(json_encode(array("code" => "0", "msg" => "Erro ao inserir.")));
+                exit(json_encode(array("code" => "0", "msg" => "Erro atualizar a senha, Tente novamente mais tarde.")));
             }
         }
         echo (json_encode($msg));
@@ -64,7 +74,7 @@ class Alterar_senha_Model extends Model
     //     // var_dump($post);exit;
     //     $cpf = $post->CPF;
     //     $senha = $post->SENHA;
-	// 	$dados=array(':CPF' => $cpf,':SENHA' => $senha);
+	// 	   $dados=array(':CPF' => $cpf,':SENHA' => $senha);
     //     $result = $this->db->select("SELECT
     //                                     CPF,
     //                                     SENHA,

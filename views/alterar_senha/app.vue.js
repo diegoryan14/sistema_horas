@@ -114,9 +114,21 @@ Vue.component("AppVue", {
 				'CONFIRM_SENHA': this.input.CONFIRM_SENHA
 			}
 			axios.post(BASE + "/alterar_senha/alterar_senha",obj).then((res) => {
-				
-			})
-
+				if(res.data.code == '0'){
+					dialogAlert({
+						msg: res.data.msg,
+						closeEsc: true,
+						btnOkText: "Fechar"
+					})
+					return;
+				}
+				dialogAlert({
+					msg: res.data.msg,
+					closeEsc: true,
+					btnOkText: "Fechar"
+				})
+				return;
+			});
 		}
 	}, 
 	mounted() {
