@@ -8,6 +8,8 @@ da tecnologia (no caso o VUE com o Javascript e PHP)
 
 Sistema de Banco de Horas
 
+https://primevue.org/installation/
+
 oq fazer:
   - qnd for inserir o usuario, ver se aquele cpf ja existe, se existir dar uma mensagem perguntando se ele quer msm alterar as informações.
   - fazer a tela do usuario para cadastrar as horas trabalhadas, q somente o usuario pode ver suas horas.
