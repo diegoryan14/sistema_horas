@@ -30,7 +30,7 @@ class Alterar_senha_Model extends Model
         //     exit(json_encode(array("code" => "0", "msg" => "Senha diferentes!!. Por favor, digite novamente.")));
         // }
 
-        Session::init();        
+        Session::init();   
         $o = Session::get('CPF');
         // var_dump($o);exit;
         $cpf = $o;
@@ -43,12 +43,11 @@ class Alterar_senha_Model extends Model
                                         USUARIO U
                                      WHERE 
                                         U.CPF = :par_CPF",$dados);
-        var_dump($result);exit;
+        var_dump($result[0]->SENHA);exit;
         if(!$result){
             exit(json_encode(array("code" => "0", "msg" => "Erro ao Alterar Senha, Tente novamente mais tarde.")));
         }
-        
-        if($result[0]['SENHA'] != $senha_atual_hash){
+        if($result[0]->SENHA != $senha_atual_hash){
             exit(json_encode(array("code" => "0", "msg" => "Senha atual está Incorreta, digite novamente.")));
         }
 
