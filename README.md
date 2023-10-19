@@ -18,65 +18,65 @@ oq fazer:
 
 example comboBox
 
-<div class="col-xs-12 col-sm-8 col-lg-8 col-md-8" style="margin-bottom: 10px;">
-    <ejs-combobox
-        ref="ALUNO"
-        id='aluno'
-        v-model="input.RA"
-        :dataSource='Aluno'
-        :fields="{ text: 'NOMEALUNO', value: 'RA'}"
-        :change = "getAction"
-        @input.native='filtering'
-        floatLabelType="Auto"
-        maxlength="30"
-        cssClass="e-outline"
-        filterType='Contains'
-        :placeholder="'Buscar Aluno [NOME - RA - CPF] *'">
-    </ejs-combobox>
-</div>
+    <div class="col-xs-12 col-sm-8 col-lg-8 col-md-8" style="margin-bottom: 10px;">
+        <ejs-combobox
+            ref="ALUNO"
+            id='aluno'
+            v-model="input.RA"
+            :dataSource='Aluno'
+            :fields="{ text: 'NOMEALUNO', value: 'RA'}"
+            :change = "getAction"
+            @input.native='filtering'
+            floatLabelType="Auto"
+            maxlength="30"
+            cssClass="e-outline"
+            filterType='Contains'
+            :placeholder="'Buscar Aluno [NOME - RA - CPF] *'">
+        </ejs-combobox>
+    </div>
 
 
-filtering: function (args) {
-    clearTimeout(this.setTimeout);
-    this.limpar_campos();
-
-    if ((args.target.value.trim()).length >= 4) {
-        this.$refs.ALUNO.hidePopup();
-
-        this.setTimeout = setTimeout(() => {
-            var regex = new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ0-9% ]{0,}$');
-            var x = regex.test(args.target.value);
-            if (x == false) {
-                this.limpar_campos();
-                return;
-            } else {
-                if (args.target.value.length <= 4){
+    filtering: function (args) {
+        clearTimeout(this.setTimeout);
+        this.limpar_campos();
+    
+        if ((args.target.value.trim()).length >= 4) {
+            this.$refs.ALUNO.hidePopup();
+    
+            this.setTimeout = setTimeout(() => {
+                var regex = new RegExp('^[A-Za-zÀ-ÖØ-öø-ÿ0-9% ]{0,}$');
+                var x = regex.test(args.target.value);
+                if (x == false) {
+                    this.limpar_campos();
+                    return;
+                } else {
+                    if (args.target.value.length <= 4){
+                        return;
+                    }
+                    this.getDadosAluno(args.target.value);
                     return;
                 }
-                this.getDadosAluno(args.target.value);
-                return;
-            }
-        }, 500);
-    }
-},
-getDadosAluno(str) {
-    this.Aluno = [];
-    var filter = str;
-    filter = filter.replace(' ', '%');
-    str = filter;
-    var obj = {
-        'FILTRO': str
-    }
-    const uninterceptedAxiosInstance = axios.create();
-    uninterceptedAxiosInstance.post(BASE + "/extrato_debitos/getDadosAluno", obj).then((res) => {
-        if (res.data.code == 0) {
-            this.exist_Aluno = 1;
-            this.Aluno = [];
-            return;
-        } else {
-            this.exist_Aluno = 0;
-            this.Aluno = res.data.data;
-            this.$refs.ALUNO.showPopup();
+            }, 500);
         }
-    })
-},
+    },
+    getDadosAluno(str) {
+        this.Aluno = [];
+        var filter = str;
+        filter = filter.replace(' ', '%');
+        str = filter;
+        var obj = {
+            'FILTRO': str
+        }
+        const uninterceptedAxiosInstance = axios.create();
+        uninterceptedAxiosInstance.post(BASE + "/extrato_debitos/getDadosAluno", obj).then((res) => {
+            if (res.data.code == 0) {
+                this.exist_Aluno = 1;
+                this.Aluno = [];
+                return;
+            } else {
+                this.exist_Aluno = 0;
+                this.Aluno = res.data.data;
+                this.$refs.ALUNO.showPopup();
+            }
+        })
+    },
